@@ -40,14 +40,61 @@ class _HomePageState extends State<HomePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text(
-                  "Question ${index + 1} /${questions.length}",
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w300,
-                    fontSize: 28.0,
+                SizedBox(
+                  width: double.infinity,
+                  child: Text(
+                    "Question ${index + 1} /${questions.length}",
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w300,
+                      fontSize: 28.0,
+                    ),
                   ),
                 ),
+                const Divider(
+                  color: Colors.white,
+                  height: 8.0,
+                  thickness: 2.0,
+                ),
+                const SizedBox(
+                  height: 20.0,
+                ),
+                Text(
+                  questions[index].question!,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 24.0,
+                  ),
+                ),
+                SizedBox(
+                  height: 35.0,
+                ),
+                for (int i = 0; i < questions[index].answer!.length; i++)
+                  Container(
+                    width: double.infinity,
+                    margin: EdgeInsets.only(bottom: 20.0),
+                    child: MaterialButton(
+                      shape: StadiumBorder(),
+                      color: secondColor,
+                      padding: EdgeInsets.symmetric(vertical: 25.0),
+                      onPressed: () {},
+                      child: Text(
+                        questions[index].answer!.keys.toList()[i],
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                SizedBox(
+                  height: 30.0,
+                ),
+                OutlinedButton(
+                  onPressed: () {},
+                  style: ButtonStyle(),
+                  child: Text("Next Question",
+                      style: TextStyle(color: Colors.white)),
+                )
               ],
             );
           },

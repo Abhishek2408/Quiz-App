@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:project/data/questions_list.dart';
+import 'package:project/screens/result_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -26,6 +27,12 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   Color mainColor = Color(0xFF252c4a);
   Color secondColor = Color(0xFF117eeb);
+  PageController? _controller = PageController(initialPage: 0);
+  bool isPressed = false;
+  Color isTrue = Colors.green;
+  Color isWrong = Colors.red;
+  Color btnColor = Color(0xFF117eeb);
+  int score = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +41,13 @@ class _HomePageState extends State<HomePage> {
       body: Padding(
         padding: EdgeInsets.all(18.0),
         child: PageView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          controller: _controller!,
+          onPageChanged: (page) {
+            setState(() {
+              isPressed = false;
+            });
+          },
           itemCount: questions.length,
           itemBuilder: (context, index) {
             return Column(
@@ -75,9 +89,27 @@ class _HomePageState extends State<HomePage> {
                     margin: EdgeInsets.only(bottom: 20.0),
                     child: MaterialButton(
                       shape: StadiumBorder(),
-                      color: secondColor,
+                      color: isPressed
+                          ? questions[index].answer!.entries.toList()[i].value
+                              ? isTrue
+                              : isWrong
+                          : secondColor,
                       padding: EdgeInsets.symmetric(vertical: 25.0),
-                      onPressed: () {},
+                      onPressed: isPressed
+                          ? () {}
+                          : () {
+                              setState(() {
+                                isPressed = true;
+                              });
+                              if (questions[index]
+                                  .answer!
+                                  .entries
+                                  .toList()[i]
+                                  .value) {
+                                score += 10;
+                                print(score);
+                              }
+                            },
                       child: Text(
                         questions[index].answer!.keys.toList()[i],
                         style: TextStyle(
@@ -87,13 +119,40 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 SizedBox(
-                  height: 30.0,
+                  height: 50.0,
                 ),
-                OutlinedButton(
-                  onPressed: () {},
-                  style: ButtonStyle(),
-                  child: Text("Next Question",
-                      style: TextStyle(color: Colors.white)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    OutlinedButton(
+                      onPressed: isPressed
+                          ? index + 1 == questions.length
+                              ? () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (cocntext) =>
+                                              ResultScreen(score)));
+                                }
+                              : () {
+                                  _controller!.nextPage(
+                                      duration: Duration(milliseconds: 500),
+                                      curve: Curves.linear);
+                                  setState(() {
+                                    isPressed = false;
+                                  });
+                                }
+                          : null,
+                      style: OutlinedButton.styleFrom(
+                          shape: StadiumBorder(),
+                          side: BorderSide(color: Colors.orange, width: 1.0)),
+                      child: Text(
+                          index + 1 == questions.length
+                              ? "See Result"
+                              : "Next Question",
+                          style: TextStyle(color: Colors.white)),
+                    ),
+                  ],
                 )
               ],
             );
